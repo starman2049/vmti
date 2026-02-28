@@ -2,6 +2,8 @@
 #define VMTI_METADATA_H
 
 #include <cstdint>
+#include <iomanip>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -114,6 +116,29 @@ public:
         result += targetsStr;
 
         return result;
+    }
+
+    std::string toHexString() const {
+        const std::string encoded = toString();
+        std::ostringstream hex;
+
+        hex << std::hex << std::setfill('0');
+        for (std::size_t i = 0; i < encoded.size(); ++i) {
+            if (i > 0) {
+                if (i % 16 == 0) {
+                    hex << '\n';
+                } else {
+                    hex << ' ';
+                }
+            }
+
+            const unsigned char byte = static_cast<unsigned char>(encoded[i]);
+            hex << std::setw(2) << static_cast<unsigned int>(byte);
+        }
+
+        hex << '\n';
+
+        return hex.str();
     }
 };
 
