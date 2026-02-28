@@ -13,16 +13,12 @@ static void testBuilderCopiesData() {
 
     VMTIMetadata metadata = VMTIBuilder()
         .setVersionNumber(2)
-        .setNumTargetsSeen(11)
-        .setNumTargetsReported(1)
         .setFrameWidth(1920)
         .setFrameHeight(1080)
         .addTarget(target)
         .build();
 
     assert(metadata.versionNumber == 2);
-    assert(metadata.numTargetsSeen == 11);
-    assert(metadata.numTargetsReported == 1);
     assert(metadata.frameWidth == 1920);
     assert(metadata.frameHeight == 1080);
     assert(metadata.targets.size() == 1);
@@ -32,8 +28,6 @@ static void testBuilderCopiesData() {
 static void testMetadataEncodesVariableLengthBigEndianPixels() {
     VMTIMetadata metadata;
     metadata.versionNumber = 1;
-    metadata.numTargetsSeen = 1;
-    metadata.numTargetsReported = 1;
     metadata.frameWidth = 300;
     metadata.frameHeight = 200;
 

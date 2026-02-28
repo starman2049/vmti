@@ -9,16 +9,6 @@ VMTIBuilder& VMTIBuilder::setVersionNumber(uint8_t version) {
     return *this;
 }
 
-VMTIBuilder& VMTIBuilder::setNumTargetsSeen(uint32_t numTargets) {
-    _metadata->numTargetsSeen = numTargets;
-    return *this;
-}
-
-VMTIBuilder& VMTIBuilder::setNumTargetsReported(uint32_t numTargets) {
-    _metadata->numTargetsReported = numTargets;
-    return *this;
-}
-
 VMTIBuilder& VMTIBuilder::setFrameWidth(uint32_t width) {
     _metadata->frameWidth = width;
     return *this;

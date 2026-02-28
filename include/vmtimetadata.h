@@ -30,18 +30,18 @@ struct VMTITarget {
 class VMTIMetadata {
 public:
     uint8_t versionNumber;
-    uint32_t numTargetsSeen;
-    uint32_t numTargetsReported;
     uint32_t frameWidth;
     uint32_t frameHeight;
     std::vector<VMTITarget> targets;
 
     VMTIMetadata()
-        : versionNumber(0), numTargetsSeen(0), numTargetsReported(0), frameWidth(0), frameHeight(0) {}
+        : versionNumber(0), frameWidth(0), frameHeight(0) {}
 
     std::string toString() const {
         std::string result;
         std::string targetsStr;
+
+        const uint8_t targetCount = static_cast<uint8_t>(targets.size() & 0xFF);
 
         result.push_back(0x04);
         result.push_back(0x01);
@@ -49,11 +49,11 @@ public:
 
         result.push_back(0x05);
         result.push_back(0x01);
-        result.push_back(static_cast<char>(numTargetsSeen & 0xFF));
+        result.push_back(static_cast<char>(targetCount));
 
         result.push_back(0x06);
         result.push_back(0x01);
-        result.push_back(static_cast<char>(numTargetsReported & 0xFF));
+        result.push_back(static_cast<char>(targetCount));
 
         result.push_back(0x08);
         result.push_back(0x02);

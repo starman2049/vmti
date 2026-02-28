@@ -25,12 +25,9 @@ int main() {
             .targetConfidence = 20,
         },
     }};
-
     VMTIBuilder builder;
     builder
         .setVersionNumber(2)
-        .setNumTargetsSeen(11)
-        .setNumTargetsReported(1)
         .setFrameWidth(1920)
         .setFrameHeight(1080);
 

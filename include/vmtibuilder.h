@@ -10,8 +10,6 @@ public:
     ~VMTIBuilder();
 
     VMTIBuilder& setVersionNumber(uint8_t version);
-    VMTIBuilder& setNumTargetsSeen(uint32_t numTargets);
-    VMTIBuilder& setNumTargetsReported(uint32_t numTargets);
     VMTIBuilder& setFrameWidth(uint32_t width);
     VMTIBuilder& setFrameHeight(uint32_t height);
     VMTIBuilder& addTarget(const VMTITarget& target);
