@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(vmti
     src/main.cpp
-    src/vmtibuilder.cpp
+    src/vmtimetadata.cpp
 )
 
 target_include_directories(vmti
@@ -17,8 +17,10 @@ target_include_directories(vmti
 
 enable_testing()
 
+find_package(GTest REQUIRED)
+
 add_executable(vmti_tests
-    src/vmtibuilder.cpp
+    src/vmtimetadata.cpp
     tests/test_main.cpp
 )
 
@@ -27,4 +29,10 @@ target_include_directories(vmti_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-add_test(NAME vmti_tests COMMAND vmti_tests)
+target_link_libraries(vmti_tests
+    PRIVATE
+        GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(vmti_tests)

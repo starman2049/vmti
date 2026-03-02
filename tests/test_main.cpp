@@ -1,6 +1,5 @@
-#include "vmtibuilder.h"
-
-#include <cassert>
+#include "vmtimetadata.h"
+#include <gtest/gtest.h>
 #include <cstdint>
 #include <string>
 
@@ -8,7 +7,7 @@ static uint8_t byteAt(const std::string& s, std::size_t i) {
     return static_cast<uint8_t>(s.at(i));
 }
 
-static void testBuilderCopiesData() {
+TEST(VMTIBuilderTest, CopiesData) {
     VMTITarget target{0x01020304, 5, 6, 7, 8, 9, 10};
 
     VMTIMetadata metadata = VMTIBuilder()
@@ -18,14 +17,14 @@ static void testBuilderCopiesData() {
         .addTarget(target)
         .build();
 
-    assert(metadata.versionNumber == 2);
-    assert(metadata.frameWidth == 1920);
-    assert(metadata.frameHeight == 1080);
-    assert(metadata.targets.size() == 1);
-    assert(metadata.targets[0].targetID == 0x01020304);
+    ASSERT_EQ(metadata.versionNumber, 2);
+    ASSERT_EQ(metadata.frameWidth, 1920);
+    ASSERT_EQ(metadata.frameHeight, 1080);
+    ASSERT_EQ(metadata.targets.size(), 1);
+    ASSERT_EQ(metadata.targets[0].targetID, 0x01020304);
 }
 
-static void testMetadataEncodesVariableLengthBigEndianPixels() {
+TEST(VMTIMetadataTest, EncodesVariableLengthBigEndianPixels) {
     VMTIMetadata metadata;
     metadata.versionNumber = 1;
     metadata.frameWidth = 300;
@@ -48,38 +47,32 @@ static void testMetadataEncodesVariableLengthBigEndianPixels() {
     while (i < encoded.size() && byteAt(encoded, i) != 0x0A) {
         ++i;
     }
-    assert(i + 1 < encoded.size());
+    ASSERT_LT(i + 1, encoded.size());
 
     const uint8_t targetLen = byteAt(encoded, i + 1);
-    assert(targetLen == 18);
+    ASSERT_EQ(targetLen, 18);
 
     std::size_t p = i + 2;
-    assert(byteAt(encoded, p++) == 0x11);
-    assert(byteAt(encoded, p++) == 0x22);
-    assert(byteAt(encoded, p++) == 0x33);
-    assert(byteAt(encoded, p++) == 0x44);
+    ASSERT_EQ(byteAt(encoded, p++), 0x11);
+    ASSERT_EQ(byteAt(encoded, p++), 0x22);
+    ASSERT_EQ(byteAt(encoded, p++), 0x33);
+    ASSERT_EQ(byteAt(encoded, p++), 0x44);
 
-    assert(byteAt(encoded, p++) == 0x02);
-    assert(byteAt(encoded, p++) == 0x02);
-    assert(byteAt(encoded, p++) == 0x01);
-    assert(byteAt(encoded, p++) == 0x2C);
+    ASSERT_EQ(byteAt(encoded, p++), 0x02);
+    ASSERT_EQ(byteAt(encoded, p++), 0x02);
+    ASSERT_EQ(byteAt(encoded, p++), 0x01);
+    ASSERT_EQ(byteAt(encoded, p++), 0x2C);
 
-    assert(byteAt(encoded, p++) == 0x03);
-    assert(byteAt(encoded, p++) == 0x02);
-    assert(byteAt(encoded, p++) == 0x04);
-    assert(byteAt(encoded, p++) == 0xB4);
+    ASSERT_EQ(byteAt(encoded, p++), 0x03);
+    ASSERT_EQ(byteAt(encoded, p++), 0x02);
+    ASSERT_EQ(byteAt(encoded, p++), 0x04);
+    ASSERT_EQ(byteAt(encoded, p++), 0xB4);
 
-    assert(byteAt(encoded, p++) == 0x04);
-    assert(byteAt(encoded, p++) == 0x01);
-    assert(byteAt(encoded, p++) == 0xAA);
+    ASSERT_EQ(byteAt(encoded, p++), 0x04);
+    ASSERT_EQ(byteAt(encoded, p++), 0x01);
+    ASSERT_EQ(byteAt(encoded, p++), 0xAA);
 
-    assert(byteAt(encoded, p++) == 0x05);
-    assert(byteAt(encoded, p++) == 0x01);
-    assert(byteAt(encoded, p++) == 0x55);
-}
-
-int main() {
-    testBuilderCopiesData();
-    testMetadataEncodesVariableLengthBigEndianPixels();
-    return 0;
+    ASSERT_EQ(byteAt(encoded, p++), 0x05);
+    ASSERT_EQ(byteAt(encoded, p++), 0x01);
+    ASSERT_EQ(byteAt(encoded, p++), 0x55);
 }

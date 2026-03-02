@@ -142,4 +142,20 @@ public:
     }
 };
 
+class VMTIBuilder {
+public:
+    VMTIBuilder();
+    ~VMTIBuilder();
+
+    VMTIBuilder& setVersionNumber(uint8_t version);
+    VMTIBuilder& setFrameWidth(uint32_t width);
+    VMTIBuilder& setFrameHeight(uint32_t height);
+    VMTIBuilder& addTarget(const VMTITarget& target);
+
+    VMTIMetadata build();
+
+private:
+    std::unique_ptr<VMTIMetadata> _metadata;
+};
+
 #endif // VMTI_METADATA_H
