@@ -20,13 +20,11 @@ TEST(VMTIBuilderTest, CopiesData) {
     VMTITarget target{0x01020304, 5, 6, 7, 8, 9, 10};
 
     VMTIMetadata metadata = VMTIBuilder()
-        .setVersionNumber(2)
         .setFrameWidth(1920)
         .setFrameHeight(1080)
         .addTarget(target)
         .build();
 
-    ASSERT_EQ(metadata.versionNumber, 2);
     ASSERT_EQ(metadata.frameWidth, 1920);
     ASSERT_EQ(metadata.frameHeight, 1080);
     ASSERT_EQ(metadata.targets.size(), 1);
@@ -39,7 +37,6 @@ TEST(VMTIBuilderTest, CopiesData) {
  */
 TEST(VMTIMetadataTest, EncodesVariableLengthBigEndianPixels) {
     VMTIMetadata metadata;
-    metadata.versionNumber = 1;
     metadata.frameWidth = 300;
     metadata.frameHeight = 200;
 

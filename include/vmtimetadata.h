@@ -66,7 +66,7 @@ public:
      * @brief Default constructor for VMTIMetadata.
      */
     VMTIMetadata()
-        : versionNumber(0), frameWidth(0), frameHeight(0) {}
+        : versionNumber(4), frameWidth(0), frameHeight(0) {}
 
     /**
      * @brief Serializes the metadata to a byte string.
@@ -116,9 +116,6 @@ public:
         for (const auto& target : targets) {
             std::string targetStr;
 
-            targetStr.push_back(static_cast<char>((target.targetID >> 24) & 0xFF));
-            targetStr.push_back(static_cast<char>((target.targetID >> 16) & 0xFF));
-            targetStr.push_back(static_cast<char>((target.targetID >> 8) & 0xFF));
             targetStr.push_back(static_cast<char>(target.targetID & 0xFF));
 
             const uint32_t topLeftPixel = target.bboxTopLeftPixel(frameWidth, frameHeight);
@@ -141,12 +138,11 @@ public:
             targetStr.push_back(0x01);
             targetStr.push_back(static_cast<char>(target.targetConfidence));
 
-            targetsStr.push_back(0x0A);
-            targetsStr.push_back(static_cast<char>(targetStr.size()));
+            targetsStr.push_back(targetStr.size());
             targetsStr += targetStr;
         }
 
-        result.push_back(0x0B);
+        result.push_back(0x65);
         result.push_back(static_cast<char>(targetsStr.size()));
         result += targetsStr;
 
@@ -195,16 +191,6 @@ public:
      * @brief Default destructor.
      */
     ~VMTIBuilder() = default;
-
-    /**
-     * @brief Sets the version number for the VMTI metadata.
-     * @param version The version number.
-     * @return A reference to the builder.
-     */
-    VMTIBuilder& setVersionNumber(uint8_t version) {
-        _metadata->versionNumber = version;
-        return *this;
-    }
 
     /**
      * @brief Sets the frame width for the VMTI metadata.

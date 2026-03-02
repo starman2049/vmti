@@ -38,7 +38,6 @@ int main() {
     // Use the builder to construct the metadata.
     VMTIBuilder builder;
     builder
-        .setVersionNumber(2)
         .setFrameWidth(1920)
         .setFrameHeight(1080);
 
