@@ -144,15 +144,33 @@ public:
 
 class VMTIBuilder {
 public:
-    VMTIBuilder();
-    ~VMTIBuilder();
+    VMTIBuilder() : _metadata(std::make_unique<VMTIMetadata>()) {}
+    ~VMTIBuilder() = default;
 
-    VMTIBuilder& setVersionNumber(uint8_t version);
-    VMTIBuilder& setFrameWidth(uint32_t width);
-    VMTIBuilder& setFrameHeight(uint32_t height);
-    VMTIBuilder& addTarget(const VMTITarget& target);
+    VMTIBuilder& setVersionNumber(uint8_t version) {
+        _metadata->versionNumber = version;
+        return *this;
+    }
 
-    VMTIMetadata build();
+    VMTIBuilder& setFrameWidth(uint32_t width) {
+        _metadata->frameWidth = width;
+        return *this;
+    }
+
+    VMTIBuilder& setFrameHeight(uint32_t height) {
+        _metadata->frameHeight = height;
+        return *this;
+    }
+
+    VMTIBuilder& addTarget(const VMTITarget& target) {
+        _metadata->targets.push_back(target);
+        return *this;
+    }
+
+    VMTIMetadata build() {
+        VMTIMetadata result = *_metadata;
+        return result;
+    }
 
 private:
     std::unique_ptr<VMTIMetadata> _metadata;

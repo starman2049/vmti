@@ -7,7 +7,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(vmti
     src/main.cpp
-    src/vmtimetadata.cpp
 )
 
 target_include_directories(vmti
@@ -20,7 +19,6 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 add_executable(vmti_tests
-    src/vmtimetadata.cpp
     tests/test_main.cpp
 )
 
