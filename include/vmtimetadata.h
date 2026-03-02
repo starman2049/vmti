@@ -20,7 +20,7 @@
  * @brief Represents a single target in the VMTI metadata.
  */
 struct VMTITarget {
-    uint32_t targetID;          ///< Unique identifier for the target.
+    uint8_t targetID;          ///< Unique identifier for the target.
     uint32_t bboxTopLeftX;      ///< Bounding box top-left X coordinate.
     uint32_t bboxTopLeftY;      ///< Bounding box top-left Y coordinate.
     uint32_t bboxBottomRightX;  ///< Bounding box bottom-right X coordinate.
