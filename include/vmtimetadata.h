@@ -1,42 +1,77 @@
+/**
+ * @file vmtimetadata.h
+ * @brief Defines the VMTI (Video Moving Target Indicator) metadata structures and builder.
+ *
+ * This file contains the definitions for VMTIMetadata, VMTITarget, and VMTIBuilder,
+ * which are used to construct and represent VMTI metadata packets.
+ */
 #ifndef VMTI_METADATA_H
 #define VMTI_METADATA_H
 
 #include <cstdint>
 #include <iomanip>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
 
+/**
+ * @struct VMTITarget
+ * @brief Represents a single target in the VMTI metadata.
+ */
 struct VMTITarget {
-    uint32_t targetID;
-    uint32_t bboxTopLeftX;
-    uint32_t bboxTopLeftY;
-    uint32_t bboxBottomRightX;
-    uint32_t bboxBottomRightY;
-    uint8_t targetPriority;
-    uint8_t targetConfidence;
+    uint32_t targetID;          ///< Unique identifier for the target.
+    uint32_t bboxTopLeftX;      ///< Bounding box top-left X coordinate.
+    uint32_t bboxTopLeftY;      ///< Bounding box top-left Y coordinate.
+    uint32_t bboxBottomRightX;  ///< Bounding box bottom-right X coordinate.
+    uint32_t bboxBottomRightY;  ///< Bounding box bottom-right Y coordinate.
+    uint8_t targetPriority;     ///< Priority of the target.
+    uint8_t targetConfidence;   ///< Confidence level of the target detection.
 
+    /**
+     * @brief Calculates the pixel offset for the top-left corner of the bounding box.
+     * @param width The width of the frame.
+     * @param height The height of the frame (unused).
+     * @return The pixel offset from the top-left of the frame.
+     */
     uint32_t bboxTopLeftPixel(uint32_t width, uint32_t height) const {
         (void)height;
         return bboxTopLeftY * width + bboxTopLeftX;
     }
 
+    /**
+     * @brief Calculates the pixel offset for the bottom-right corner of the bounding box.
+     * @param width The width of the frame.
+     * @param height The height of the frame (unused).
+     * @return The pixel offset from the top-left of the frame.
+     */
     uint32_t bboxBottomRightPixel(uint32_t width, uint32_t height) const {
         (void)height;
         return bboxBottomRightY * width + bboxBottomRightX;
     }
 };
 
+/**
+ * @class VMTIMetadata
+ * @brief Represents the VMTI metadata packet.
+ */
 class VMTIMetadata {
 public:
-    uint8_t versionNumber;
-    uint32_t frameWidth;
-    uint32_t frameHeight;
-    std::vector<VMTITarget> targets;
+    uint8_t versionNumber;              ///< VMTI format version number.
+    uint32_t frameWidth;                ///< Width of the video frame.
+    uint32_t frameHeight;               ///< Height of the video frame.
+    std::vector<VMTITarget> targets;    ///< List of targets detected in the frame.
 
+    /**
+     * @brief Default constructor for VMTIMetadata.
+     */
     VMTIMetadata()
         : versionNumber(0), frameWidth(0), frameHeight(0) {}
 
+    /**
+     * @brief Serializes the metadata to a byte string.
+     * @return A string representing the serialized metadata.
+     */
     std::string toString() const {
         std::string result;
         std::string targetsStr;
@@ -118,6 +153,10 @@ public:
         return result;
     }
 
+    /**
+     * @brief Converts the serialized metadata to a hex string for display.
+     * @return A formatted hex string.
+     */
     std::string toHexString() const {
         const std::string encoded = toString();
         std::ostringstream hex;
@@ -142,38 +181,72 @@ public:
     }
 };
 
+/**
+ * @class VMTIBuilder
+ * @brief A builder class for creating VMTIMetadata objects.
+ */
 class VMTIBuilder {
 public:
+    /**
+     * @brief Default constructor for VMTIBuilder.
+     */
     VMTIBuilder() : _metadata(std::make_unique<VMTIMetadata>()) {}
+    /**
+     * @brief Default destructor.
+     */
     ~VMTIBuilder() = default;
 
+    /**
+     * @brief Sets the version number for the VMTI metadata.
+     * @param version The version number.
+     * @return A reference to the builder.
+     */
     VMTIBuilder& setVersionNumber(uint8_t version) {
         _metadata->versionNumber = version;
         return *this;
     }
 
+    /**
+     * @brief Sets the frame width for the VMTI metadata.
+     * @param width The frame width.
+     * @return A reference to the builder.
+     */
     VMTIBuilder& setFrameWidth(uint32_t width) {
         _metadata->frameWidth = width;
         return *this;
     }
 
+    /**
+     * @brief Sets the frame height for the VMTI metadata.
+     * @param height The frame height.
+     * @return A reference to the builder.
+     */
     VMTIBuilder& setFrameHeight(uint32_t height) {
         _metadata->frameHeight = height;
         return *this;
     }
 
+    /**
+     * @brief Adds a target to the VMTI metadata.
+     * @param target The target to add.
+     * @return A reference to the builder.
+     */
     VMTIBuilder& addTarget(const VMTITarget& target) {
         _metadata->targets.push_back(target);
         return *this;
     }
 
+    /**
+     * @brief Builds the VMTIMetadata object.
+     * @return The constructed VMTIMetadata object.
+     */
     VMTIMetadata build() {
         VMTIMetadata result = *_metadata;
         return result;
     }
 
 private:
-    std::unique_ptr<VMTIMetadata> _metadata;
+    std::unique_ptr<VMTIMetadata> _metadata; ///< The metadata object being built.
 };
 
 #endif // VMTI_METADATA_H
