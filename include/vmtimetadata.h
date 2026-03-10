@@ -143,7 +143,8 @@ public:
         }
 
         result.push_back(0x65);
-        result.push_back(static_cast<char>(targetsStr.size()));
+        auto targetsLenStr = berLengthString(targetsStr.size());
+        result += targetsLenStr;
         result += targetsStr;
 
         return result;
@@ -174,6 +175,32 @@ public:
         hex << '\n';
 
         return hex.str();
+    }
+
+private:
+    /**
+     * @brief Encodes a length value using BER length encoding.
+     * @param length The length to encode.
+     * @return Encoded BER length bytes.
+     */
+    static std::string berLengthString(std::size_t length) {
+        std::string out;
+
+        if (length < 0x80) {
+            out.push_back(static_cast<char>(length & 0x7F));
+            return out;
+        }
+
+        std::string lengthBytes;
+        std::size_t value = length;
+        while (value > 0) {
+            lengthBytes.insert(lengthBytes.begin(), static_cast<char>(value & 0xFF));
+            value >>= 8;
+        }
+
+        out.push_back(static_cast<char>(0x80 | (lengthBytes.size() & 0x7F)));
+        out += lengthBytes;
+        return out;
     }
 };
 
